@@ -1,6 +1,5 @@
 import React from 'react';
-import './App.css';
-import Frontend from './frontend'
+import Frontend from '../frontend'
 
 const App: React.FC = () => {
   return (

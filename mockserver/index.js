@@ -1,12 +1,16 @@
 const express = require('express')
-const proxy_server = process.env.PROXY_SERVER || 'http://localhost:8080'
-const port = process.env.MOCK_SERVER_PORT || '3001'
+const log = require('maxthod-logger').Logger(__filename)
 var request = require('request');
 const server = express()
 const path = require('path');
-const mockFolder = path.join(__dirname, 'mocks')
-const base_path = '/api/v1'
 const fs = require('fs');
+
+const proxy_server = process.env.PROXY_SERVER || 'http://localhost:8080'
+const port = process.env.MOCK_SERVER_PORT || '3001'
+
+const base_path = '/api/v1'
+const mockFolder = path.join(__dirname, 'mocks')
+
 
 fs.readdirSync(mockFolder).forEach(file => {
     const type = file.split('.')[1]
@@ -17,6 +21,8 @@ fs.readdirSync(mockFolder).forEach(file => {
     } else if (type == 'js') {
         const resource = file.split('.')[0]
         endpoint = `${base_path}/${resource}`
+    } else {
+        log.error(`Mock File not processed: ${file}`)
     }
 
     if (type == 'json') {
@@ -39,6 +45,6 @@ server.use(function (req, res) {
 
 
 server.listen(port, () => {
-    console.log(`Mock Server started on port '${port}'`)
+    log.info(`Mock Server started on port '${port}'`)
 })
 
